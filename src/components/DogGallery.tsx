@@ -65,6 +65,9 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
         showBoundary(error)
       })
       .finally(() => {
+        if (filterOptions.from === 0 && currentPage !== 1) {
+          setCurrentPage(1)
+        }
         setIsLoading(false)
       })
   }, [filterOptions])
@@ -125,54 +128,51 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
         </Box>
         <MatchModal favorites={favorites} />
       </AppBar>
-      <main>
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography
-              variant="h5"
-              align="center"
-              color="text.secondary"
-              paragraph
-            >
-              Save your favorite dogs and then click to be matched with your
-              furry soulmate.
-            </Typography>
-            <Pagination
-              count={pageCount}
-              page={currentPage}
-              onChange={(event, page) => {
-                handlePageChange(event, page)
-              }}
-              color="primary"
-              shape="rounded"
-              variant="outlined"
-              sx={{ px: 12, pt: 5 }}
-            />
-          </Container>
-        </Box>
-
-        <Container maxWidth="lg">
-          <Loading isLoading={isLoading}>
-            <Grid container spacing={4}>
-              {dogsData.map((dog) => (
-                <DogCard
-                  key={dog.id}
-                  dog={dog}
-                  favorites={favorites}
-                  setFavorites={setFavorites}
-                />
-              ))}
-            </Grid>
-          </Loading>
+      <Box
+        sx={{
+          bgcolor: 'background.paper',
+          pt: 8,
+          pb: 6
+        }}
+      >
+        <Container maxWidth="sm">
+          <Typography
+            variant="h5"
+            align="center"
+            color="text.secondary"
+            paragraph
+          >
+            Save your favorite dogs and then click to be matched with your furry
+            soulmate.
+          </Typography>
+          <Pagination
+            count={pageCount}
+            page={currentPage}
+            onChange={(event, page) => {
+              handlePageChange(event, page)
+            }}
+            color="primary"
+            shape="rounded"
+            variant="outlined"
+            sx={{ px: 12, pt: 5 }}
+          />
         </Container>
-      </main>
-      <Footer />
+      </Box>
+      <Loading isLoading={isLoading}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4}>
+            {dogsData.map((dog) => (
+              <DogCard
+                key={dog.id}
+                dog={dog}
+                favorites={favorites}
+                setFavorites={setFavorites}
+              />
+            ))}
+          </Grid>
+        </Container>
+        <Footer />
+      </Loading>
     </>
   )
 }
