@@ -99,6 +99,7 @@ export default function Login ({ setUser }: LoginProps): JSX.Element {
               type="text"
               id="name"
               autoComplete="name"
+              autoFocus
             />
             <TextField
               margin="normal"
@@ -108,7 +109,6 @@ export default function Login ({ setUser }: LoginProps): JSX.Element {
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
               error={emailInvalid}
               onFocus={() => {
                 setEmailInvalid(false)
