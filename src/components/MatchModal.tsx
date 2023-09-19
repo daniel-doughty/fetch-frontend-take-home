@@ -2,12 +2,12 @@ import { useState } from 'react'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
-import axios from 'axios'
 import { type Dog } from '../utils/types'
 import Loading from './Loading'
 import { useErrorBoundary } from 'react-error-boundary'
 import AddFavoritesMessage from './AddFavoritesMessage'
 import MatchedMessage from './MatchedMessage'
+import instance from '../config/axios'
 
 interface MatchModalProps {
   favorites: string[]
@@ -43,20 +43,14 @@ export default function MatchModal ({
 
   function fetchMatch (): void {
     setIsLoading(true)
-    axios
-      .post(
-        'https://frontend-take-home-service.fetch.com/dogs/match',
-        favorites,
-        { withCredentials: true }
-      )
+    instance
+      .post('dogs/match', favorites)
       .then((response) => {
         const {
           data: { match }
         } = response
-        axios
-          .post('https://frontend-take-home-service.fetch.com/dogs', [match], {
-            withCredentials: true
-          })
+        instance
+          .post('dogs', [match])
           .then((response) => {
             const {
               data: [dog]

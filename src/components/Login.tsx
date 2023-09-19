@@ -8,13 +8,13 @@ import Grid from '@mui/material/Grid'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Image from '../assets/man-with-dog.avif'
-import axios from 'axios'
 import { type User } from '../utils/types'
 import Copyright from './Copyright'
 import { useState } from 'react'
 import { Alert } from '@mui/material'
 import { useErrorBoundary } from 'react-error-boundary'
 import { validateEmail } from '../utils/validations'
+import instance from '../config/axios'
 
 interface LoginProps {
   setUser: (user: User) => void
@@ -30,15 +30,11 @@ export default function Login ({ setUser }: LoginProps): JSX.Element {
     const email = data.get('email')
     if (isEmailInvalid(email)) return
 
-    axios
-      .post(
-        'https://frontend-take-home-service.fetch.com/auth/login',
-        {
-          name,
-          email
-        },
-        { withCredentials: true }
-      )
+    instance
+      .post('auth/login', {
+        name,
+        email
+      })
       .then(() => {
         setUser({ name, email })
       })

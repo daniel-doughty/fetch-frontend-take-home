@@ -4,7 +4,6 @@ import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
-import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Pagination } from '@mui/material'
 import MatchModal from './MatchModal'
@@ -14,6 +13,7 @@ import { useErrorBoundary } from 'react-error-boundary'
 import Footer from './Footer'
 import DogCard from './DogCard'
 import { type User, type Dog, type FilterOptions } from '../utils/types'
+import instance from '../config/axios'
 
 const PER_PAGE = 24
 
@@ -44,20 +44,15 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
 
   useEffect(() => {
     setIsLoading(true)
-    axios
-      .get('https://frontend-take-home-service.fetch.com/dogs/search', {
-        params: filterOptions,
-        withCredentials: true
+    instance
+      .get('dogs/search', {
+        params: filterOptions
       })
       .then((response) => {
         const { data: search } = response
         setPageCount(Math.ceil(search.total / PER_PAGE))
-        axios
-          .post(
-            'https://frontend-take-home-service.fetch.com/dogs',
-            search.resultIds,
-            { withCredentials: true }
-          )
+        instance
+          .post('dogs', search.resultIds)
           .then((response) => {
             const { data: dogs } = response
             setDogsData(dogs)
@@ -81,15 +76,11 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
   }
 
   function handleLogout (): void {
-    axios
-      .post(
-        'https://frontend-take-home-service.fetch.com/auth/logout',
-        {
-          name: user.name,
-          email: user.email
-        },
-        { withCredentials: true }
-      )
+    instance
+      .post('auth/logout', {
+        name: user.name,
+        email: user.email
+      })
       .catch((error) => {
         showBoundary(error)
       })

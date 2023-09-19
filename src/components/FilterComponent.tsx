@@ -1,11 +1,11 @@
 import Autocomplete from '@mui/material/Autocomplete'
 import TextField from '@mui/material/TextField'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { type FilterOptions } from '../utils/types'
 import { Box, FormControl, InputLabel, NativeSelect } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { useErrorBoundary } from 'react-error-boundary'
+import instance from '../config/axios'
 
 interface FilterComponentProps {
   filterOptions: FilterOptions
@@ -25,11 +25,8 @@ export default function FilterComponents ({
   const [breedOptions, setBreedOptions] = useState<any>([])
   const { showBoundary } = useErrorBoundary()
   useEffect(() => {
-    axios
-      .get<BreedsApiResponse>(
-      'https://frontend-take-home-service.fetch.com/dogs/breeds',
-      { withCredentials: true }
-    )
+    instance
+      .get<BreedsApiResponse>('dogs/breeds')
       .then((response) => {
         const { data } = response
         setBreedOptions(data)
