@@ -1,0 +1,111 @@
+import { useState } from 'react'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import axios from 'axios'
+import { type Dog } from '../utils/types'
+import Loading from './Loading'
+import { useErrorBoundary } from 'react-error-boundary'
+import AddFavoritesMessage from './AddFavoritesMessage'
+import MatchedMessage from './MatchedMessage'
+
+interface MatchModalProps {
+  favorites: string[]
+}
+
+const initialMatchData = {
+  id: '',
+  name: '',
+  age: '',
+  breed: '',
+  img: '',
+  zip_code: ''
+}
+
+export default function MatchModal ({
+  favorites
+}: MatchModalProps): JSX.Element {
+  const [open, setOpen] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [matchData, setMatchData] = useState<Dog>(initialMatchData)
+
+  const { showBoundary } = useErrorBoundary()
+
+  const handleOpen = (): void => {
+    setOpen(true)
+    fetchMatch()
+  }
+
+  const handleClose = (): void => {
+    setOpen(false)
+    setMatchData(initialMatchData)
+  }
+
+  function fetchMatch (): void {
+    setIsLoading(true)
+    axios
+      .post(
+        'https://frontend-take-home-service.fetch.com/dogs/match',
+        favorites,
+        { withCredentials: true }
+      )
+      .then((response) => {
+        const {
+          data: { match }
+        } = response
+        axios
+          .post('https://frontend-take-home-service.fetch.com/dogs', [match], {
+            withCredentials: true
+          })
+          .then((response) => {
+            const {
+              data: [dog]
+            } = response
+            setMatchData(dog)
+          })
+          .catch((error) => {
+            if (favorites.length === 0) {
+              return
+            }
+            showBoundary(error)
+          })
+      })
+      .catch((error) => {
+        if (favorites.length === 0) {
+          return
+        }
+        showBoundary(error)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }
+
+  return (
+    <>
+      <Button
+        variant="contained"
+        onClick={handleOpen}
+        color="primary"
+        sx={{ minWidth: 300, alignSelf: 'center', mt: 5 }}
+      >
+        Find my match!
+      </Button>
+
+      <Dialog fullWidth maxWidth={'sm'} open={open} onClose={handleClose}>
+        <Loading isLoading={isLoading}>
+          {favorites.length === 0
+            ? (
+            <AddFavoritesMessage />
+              )
+            : (
+            <MatchedMessage matchData={matchData} />
+              )}
+          <DialogActions>
+            <Button onClick={handleClose}>Close</Button>
+          </DialogActions>
+        </Loading>
+      </Dialog>
+    </>
+  )
+}
