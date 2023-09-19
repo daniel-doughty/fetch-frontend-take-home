@@ -41,7 +41,7 @@ export default function FilterComponents ({
     value: any
   ): void {
     event.preventDefault()
-    setFilterOptions({ ...filterOptions, breeds: value })
+    setFilterOptions({ ...filterOptions, breeds: value, from: 0 })
   }
 
   return (
@@ -86,7 +86,8 @@ export default function FilterComponents ({
           onChange={(event) => {
             setFilterOptions({
               ...filterOptions,
-              sort: event.target.value
+              sort: event.target.value,
+              from: 0
             })
           }}
         >
@@ -109,7 +110,8 @@ export default function FilterComponents ({
             onChange={(event) => {
               setFilterOptions({
                 ...filterOptions,
-                ageMin: parseInt(event.target.value)
+                ageMin: parseInt(event.target.value),
+                from: 0
               })
             }}
           >
@@ -134,7 +136,8 @@ export default function FilterComponents ({
             onChange={(event) => {
               setFilterOptions({
                 ...filterOptions,
-                ageMax: parseInt(event.target.value)
+                ageMax: parseInt(event.target.value),
+                from: 0
               })
             }}
           >

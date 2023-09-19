@@ -67,7 +67,7 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
       .finally(() => {
         setIsLoading(false)
       })
-  }, [currentPage, filterOptions])
+  }, [filterOptions])
 
   function handlePageChange (
     event: React.ChangeEvent<unknown>,
