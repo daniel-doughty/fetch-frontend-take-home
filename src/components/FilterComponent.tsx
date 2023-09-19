@@ -36,6 +36,14 @@ export default function FilterComponents ({
       })
   }, [])
 
+  function handleBreedChange (
+    event: React.SyntheticEvent<Element, Event>,
+    value: any
+  ): void {
+    event.preventDefault()
+    setFilterOptions({ ...filterOptions, breeds: value })
+  }
+
   return (
     <Box
       sx={{
@@ -61,7 +69,7 @@ export default function FilterComponents ({
           />
         )}
         onChange={(event, value) => {
-          setFilterOptions({ ...filterOptions, breeds: value })
+          handleBreedChange(event, value)
         }}
       />
       <FormControl sx={{ minWidth: 100, mt: 3, mr: 5 }}>

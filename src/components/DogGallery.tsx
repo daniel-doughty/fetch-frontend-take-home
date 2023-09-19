@@ -69,7 +69,11 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
       })
   }, [currentPage, filterOptions])
 
-  function handlePageChange (page: number): void {
+  function handlePageChange (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ): void {
+    event.preventDefault()
     setCurrentPage(page)
     const from = page * PER_PAGE
     setFilterOptions({ ...filterOptions, from })
@@ -142,8 +146,8 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
             <Pagination
               count={pageCount}
               page={currentPage}
-              onChange={(e, p) => {
-                handlePageChange(p)
+              onChange={(event, page) => {
+                handlePageChange(event, page)
               }}
               color="primary"
               shape="rounded"

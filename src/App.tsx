@@ -6,6 +6,7 @@ import { createTheme } from '@mui/material/styles'
 import { ThemeProvider } from '@emotion/react'
 import { ErrorBoundary } from 'react-error-boundary'
 import ErrorPage from './components/ErrorPage'
+import { type User } from './utils/types'
 
 const theme = createTheme({
   palette: {
