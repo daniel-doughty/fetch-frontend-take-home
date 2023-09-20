@@ -62,10 +62,7 @@ This is version 0.0.1 of the DogFinder app. Here are some of the known bugs and 
 - Use the Location API to display more data to the user than the zip code. e.g. state, distance away, etc.
 - Filters for location
   - facets would be a nice-to-have also
-- Loading state has a visual bug
-  - Page jumps on filter/page change. Need to make sure the layout stays consistent on load. Scrim?
-  - Possibly an extra render on filter/page change?
-- Add empty state
+- Add empty message when there are no results
 - Validations on age filters
   - e.g. shouldn't be able to select 'Older than 8' and 'Younger than 7' at the same time
 - Better test coverage
@@ -73,6 +70,3 @@ This is version 0.0.1 of the DogFinder app. Here are some of the known bugs and 
 - Fallback image in the case of a missing/broken image
 - Display total number of favorites selected
 - Add a filter to view only favorites
-- UX design
-  - The filter/search interface is not very intuitive, this is why we have UX/UI people instead of leaving it up to engineers :)
-  - user testing/feedback should be considered
