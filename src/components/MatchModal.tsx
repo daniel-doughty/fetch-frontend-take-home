@@ -87,18 +87,24 @@ export default function MatchModal ({
       </Button>
 
       <Dialog fullWidth maxWidth={'sm'} open={open} onClose={handleClose}>
-        <Loading isLoading={isLoading}>
-          {favorites.length === 0
-            ? (
-            <AddFavoritesMessage />
-              )
-            : (
-            <MatchedMessage matchData={matchData} />
-              )}
-          <DialogActions>
-            <Button onClick={handleClose}>Close</Button>
-          </DialogActions>
-        </Loading>
+        {isLoading
+          ? (
+          <Loading isLoading={isLoading} />
+            )
+          : (
+          <>
+            {favorites.length === 0
+              ? (
+              <AddFavoritesMessage />
+                )
+              : (
+              <MatchedMessage matchData={matchData} />
+                )}
+            <DialogActions>
+              <Button onClick={handleClose}>Close</Button>
+            </DialogActions>
+          </>
+            )}
       </Dialog>
     </>
   )

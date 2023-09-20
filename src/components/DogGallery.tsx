@@ -87,7 +87,7 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
   ): void {
     event.preventDefault()
     setCurrentPage(page)
-    const from = (page * PER_PAGE) - PER_PAGE
+    const from = page * PER_PAGE - PER_PAGE
     setFilterOptions({ ...filterOptions, from })
   }
 
@@ -184,6 +184,8 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
             soulmate.
           </Typography>
         </Container>
+        <Loading isLoading={isLoading} />
+
         <Pagination
           count={pageCount}
           page={currentPage}
@@ -196,21 +198,19 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
           sx={{ pt: 2 }}
         />
       </Box>
-      <Loading isLoading={isLoading}>
-        <Container maxWidth="lg">
-          <Grid container spacing={4}>
-            {dogsData.map((dog) => (
-              <DogCard
-                key={dog.id}
-                dog={dog}
-                favorites={favorites}
-                setFavorites={setFavorites}
-              />
-            ))}
-          </Grid>
-        </Container>
-        <Footer />
-      </Loading>
+      <Container maxWidth="lg">
+        <Grid container spacing={4}>
+          {dogsData.map((dog) => (
+            <DogCard
+              key={dog.id}
+              dog={dog}
+              favorites={favorites}
+              setFavorites={setFavorites}
+            />
+          ))}
+        </Grid>
+      </Container>
+      <Footer />
     </>
   )
 }
