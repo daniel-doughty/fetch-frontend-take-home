@@ -16,6 +16,7 @@ import { type User, type Dog, type FilterOptions } from '../utils/types'
 import instance from '../config/axios'
 
 const PER_PAGE = 24
+const MAX_RESULTS = 10000
 
 const initialFilters: FilterOptions = {
   sort: 'breed:asc',
@@ -42,15 +43,23 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
 
   const { showBoundary } = useErrorBoundary()
 
+  const sizeOption = (from: number): number => {
+    if (from + PER_PAGE > MAX_RESULTS) {
+      return MAX_RESULTS - from
+    } else {
+      return PER_PAGE
+    }
+  }
+
   useEffect(() => {
     setIsLoading(true)
     instance
       .get('dogs/search', {
-        params: filterOptions
+        params: { ...filterOptions, size: sizeOption(filterOptions.from) }
       })
       .then((response) => {
         const { data: search } = response
-        setPageCount(Math.ceil(search.total / PER_PAGE))
+        setPageCount(Math.floor(search.total / PER_PAGE))
         instance
           .post('dogs', search.resultIds)
           .then((response) => {
@@ -78,7 +87,7 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
   ): void {
     event.preventDefault()
     setCurrentPage(page)
-    const from = page * PER_PAGE
+    const from = (page * PER_PAGE) - PER_PAGE
     setFilterOptions({ ...filterOptions, from })
   }
 
@@ -96,17 +105,42 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
       })
   }
 
+  function LogoutButton (): JSX.Element {
+    return (
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() => {
+          handleLogout()
+        }}
+      >
+        Logout
+      </Button>
+    )
+  }
+
   return (
     <>
       <AppBar
         position="sticky"
         sx={{ bgcolor: 'background.paper', pt: 2, pb: 2 }}
       >
+        {' '}
+        <Box
+          sx={{
+            mb: 3,
+            mr: 3,
+            marginLeft: 'auto',
+            display: { xs: 'block', md: 'none' }
+          }}
+        >
+          <LogoutButton />
+        </Box>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-evenly',
             alignItems: 'flex-end',
             flexWrap: 'wrap'
           }}
@@ -115,24 +149,28 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
             filterOptions={filterOptions}
             setFilterOptions={setFilterOptions}
           />
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              handleLogout()
+          <Box
+            sx={{
+              mt: 3,
+              mr: 3,
+              marginLeft: 'auto',
+              display: { xs: 'none', md: 'block' }
             }}
-            sx={{ mt: 3, mr: 3, marginLeft: 'auto' }}
           >
-            Logout
-          </Button>
+            <LogoutButton />
+          </Box>
         </Box>
         <MatchModal favorites={favorites} />
       </AppBar>
       <Box
         sx={{
           bgcolor: 'background.paper',
-          pt: 8,
-          pb: 6
+          pt: 4,
+          pb: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
       >
         <Container maxWidth="sm">
@@ -145,18 +183,18 @@ export default function DogGallery (props: DogGalleryProps): JSX.Element {
             Save your favorite dogs and then click to be matched with your furry
             soulmate.
           </Typography>
-          <Pagination
-            count={pageCount}
-            page={currentPage}
-            onChange={(event, page) => {
-              handlePageChange(event, page)
-            }}
-            color="primary"
-            shape="rounded"
-            variant="outlined"
-            sx={{ px: 12, pt: 5 }}
-          />
         </Container>
+        <Pagination
+          count={pageCount}
+          page={currentPage}
+          onChange={(event, page) => {
+            handlePageChange(event, page)
+          }}
+          color="primary"
+          shape="rounded"
+          variant="outlined"
+          sx={{ pt: 2 }}
+        />
       </Box>
       <Loading isLoading={isLoading}>
         <Container maxWidth="lg">

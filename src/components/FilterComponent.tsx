@@ -55,7 +55,9 @@ export default function FilterComponents ({
         flexWrap: 'wrap'
       }}
     >
-      <SearchIcon sx={{ mx: 2, color: '#1a237e' }} />
+      <SearchIcon
+        sx={{ mx: 2, color: '#1a237e', display: { xs: 'none', md: 'block' } }}
+      />
       <Autocomplete
         multiple
         id="tags-standard"
